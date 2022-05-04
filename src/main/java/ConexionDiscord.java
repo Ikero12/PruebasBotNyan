@@ -51,7 +51,7 @@ public class ConexionDiscord {
     public ConexionDiscord() {
     }
 
-    public void Mensaje(String mensajerecibido, String mensajeenviado){
+    public void Mensaje(String mensajerecibido, String mensajeenviado){             //Método base para los mensajes tipo !Ping !pong, conectado a la clase Msgs para tener más claridad a la hora de apuntarlos.
 
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
             final Message message = event.getMessage();
@@ -62,7 +62,7 @@ public class ConexionDiscord {
         });
     }
 
-  public void msgEmbed() {
+  public void msgEmbed() {                                                              //Crea un embed básico explicando la historia del BOT
       String IMAGE_URL = "https://c.tenor.com/v9sdELSzVw4AAAAC/nyan-cat-kawaii.gif";
       String AUTOR_URL = "https://c.tenor.com/v9sdELSzVw4AAAAC/nyan-cat-kawaii.gif";
       String ANY_URL = "https://www.youtube.com/watch?v=1_VCp8Y8lU0";
@@ -96,13 +96,13 @@ public class ConexionDiscord {
   }
 
 
-    public List<File> driveImg () throws IOException,GeneralSecurityException{
+    public List<File> driveImg () throws IOException,GeneralSecurityException{          //Crea la lista de imágener subidas a google drive
         //Variables estáticas finales
         final String CREDENTIALS_FILE_PATH = "/credentials.json";
         final String APPLICATION_NAME = "Google Drive API Java Quickstart";
         final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
         final String TOKENS_DIRECTORY_PATH = "tokens";
-        final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_METADATA_READONLY);
+        final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, this.getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
@@ -120,7 +120,9 @@ public class ConexionDiscord {
 
     }
 
-    public void driveimagen() throws GeneralSecurityException, IOException {
+
+
+    public void driveimagen() throws GeneralSecurityException, IOException {                //Crea un mensaje listando las imagenes subidas a Google Drive
         List<File>files = this.driveImg();
 
         EmbedCreateSpec embed;
@@ -148,7 +150,7 @@ public class ConexionDiscord {
     }});}
 
 
-    public Credential getCredentials(NetHttpTransport HTTP_TRANSPORT) throws IOException,GeneralSecurityException {
+    public Credential getCredentials(NetHttpTransport HTTP_TRANSPORT) throws IOException,GeneralSecurityException {     //Método necesario para la api de Google que saca los credenciales para poder conectarse a esta misma.
         //Variables estáticas finales
         final String CREDENTIALS_FILE_PATH = "/credentials.json";
         final String APPLICATION_NAME = "Google Drive API Java Quickstart";
@@ -175,9 +177,25 @@ public class ConexionDiscord {
         return credential;
     }
 
+    public void commands(String comando, String descripción){                           //Método base para crear un embed con la descripción de los comandos, conectado a la clase Msgs para tener más facilidad organizativa
+        String NYANCAT = "https://c.tenor.com/v9sdELSzVw4AAAAC/nyan-cat-kawaii.gif";
+        gateway.on(MessageCreateEvent.class).subscribe(event -> {
+            final Message message = event.getMessage();
+            if (("!command"+comando).equalsIgnoreCase(message.getContent())) {
+                final MessageChannel channel = message.getChannel().block();
+
+                EmbedCreateSpec.Builder builder = EmbedCreateSpec.builder();
+                builder.author("NyanCat",NYANCAT,NYANCAT);
+                builder.title("Comandos:");
+                builder.addField("!"+comando, descripción, false);
+                builder.timestamp(Instant.now());
+                channel.createMessage(builder.build()).block();
+            }
+        });
+    }
 
 
-    public void disconnect(){
+    public void disconnect(){                                                       //Desconecta el BOT de discord una vez el programa para de ejecutarse
         gateway.onDisconnect().block();
     }
 }

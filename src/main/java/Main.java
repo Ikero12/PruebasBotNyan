@@ -12,6 +12,7 @@ public class Main {
     public static void main(String[] args) {
        ConexionDiscord nyanbot = new ConexionDiscord();
        Msgs mensajes = new Msgs();
+       mensajes.commandlist();
        mensajes.messages();
         nyanbot.msgEmbed();
 

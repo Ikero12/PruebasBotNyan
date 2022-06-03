@@ -31,6 +31,11 @@ public class Main {
             throw new RuntimeException(e);
         }
 
+        try {
+            nyanbot.descargarPDF("a");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         nyanbot.disconnect();
 

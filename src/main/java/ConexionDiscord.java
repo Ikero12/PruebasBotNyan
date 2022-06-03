@@ -31,10 +31,8 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +42,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ConexionDiscord {
-    static final String token = "OTU0MjkyMDEyNjU0NDAzNjA0.G_nl2Y.ikLPQ_DIUWyCl_YPybp28ffzE9vU7pieAjWabM";
+    static final String token = "OTU0MjkyMDEyNjU0NDAzNjA0.Gu8rOQ.OW0ZR2nlw8EzhONZzGJz2lMM46-4XPkU3slQSw";
     static final DiscordClient client = DiscordClient.create(token);
     static final GatewayDiscordClient gateway = client.login().block();
 
@@ -180,7 +178,34 @@ public class ConexionDiscord {
 
 
 
-    public void getidPDF(){
+    public void getidPDF() throws IOException,GeneralSecurityException{
+    String idpdf=null;
+
+        final String CREDENTIALS_FILE_PATH = "/credentials.json";
+        final String APPLICATION_NAME = "Google Drive API Java Quickstart";
+        final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+        final String TOKENS_DIRECTORY_PATH = "tokens";
+        final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, this.getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
+        // Print the names and IDs for up to 10 files.
+        FileList result = service.files().list()
+                .setQ( "mimeType = 'application/vnd.google-apps.document' and '1dT7al515axCO-6taVZXDFnTfVTlq-C3x' in parents ")
+                .setSpaces("drive")
+                .setFields("nextPageToken, files(id)")
+                .execute();
+        List<File> files = result.getFiles();
+        idpdf = result.getFiles().get(0).getId();
+
+
+
+        String fileId = idpdf;
+        OutputStream outputStream = new ByteArrayOutputStream();
+        service.files().export(fileId, "application/pdf")
+                .executeMediaAndDownloadTo(outputStream);
 
 
 
@@ -204,10 +229,16 @@ public class ConexionDiscord {
                 channel.createMessage(embed).block();
 
 
+                try {
+                    getidPDF();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (GeneralSecurityException e) {
+                    throw new RuntimeException(e);
+                }
 
 
-
-    }});}
+            }});}
 
 
     public void commands(String comando, String descripción){                           //Método base para crear un embed con la descripción de los comandos, conectado a la clase Msgs para tener más facilidad organizativa

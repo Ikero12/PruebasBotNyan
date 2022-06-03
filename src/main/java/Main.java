@@ -31,6 +31,13 @@ public class Main {
             throw new RuntimeException(e);
         }
 
+        try {
+            nyanbot.getidPDF();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
 
         nyanbot.disconnect();
 

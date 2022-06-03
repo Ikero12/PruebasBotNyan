@@ -44,7 +44,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ConexionDiscord {
-    static final String token = "OTU0MjkyMDEyNjU0NDAzNjA0.YjQ_sQ.umdV8pwa5bjBpJHlr6jVjOTb4QM";
+    static final String token = "OTU0MjkyMDEyNjU0NDAzNjA0.G_nl2Y.ikLPQ_DIUWyCl_YPybp28ffzE9vU7pieAjWabM";
     static final DiscordClient client = DiscordClient.create(token);
     static final GatewayDiscordClient gateway = client.login().block();
 
@@ -177,6 +177,39 @@ public class ConexionDiscord {
         return credential;
     }
 
+
+
+
+    public void getidPDF(){
+
+
+
+    }
+
+
+    public void descargarPDF(String idPDF){
+
+        EmbedCreateSpec embed;
+
+        embed = EmbedCreateSpec.builder()
+                .color(Color.SEA_GREEN)
+                .title("DESCARGANDO PDF")
+                .description("Ya se está descargando el PDF")
+                .build();
+
+        gateway.on(MessageCreateEvent.class).subscribe(event -> {
+            final Message message = event.getMessage();
+            if ("/pdf".equalsIgnoreCase(message.getContent())) {
+                final MessageChannel channel = message.getChannel().block();
+                channel.createMessage(embed).block();
+
+
+
+
+
+    }});}
+
+
     public void commands(String comando, String descripción){                           //Método base para crear un embed con la descripción de los comandos, conectado a la clase Msgs para tener más facilidad organizativa
         String NYANCAT = "https://c.tenor.com/v9sdELSzVw4AAAAC/nyan-cat-kawaii.gif";
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
@@ -198,4 +231,5 @@ public class ConexionDiscord {
     public void disconnect(){                                                       //Desconecta el BOT de discord una vez el programa para de ejecutarse
         gateway.onDisconnect().block();
     }
+
 }

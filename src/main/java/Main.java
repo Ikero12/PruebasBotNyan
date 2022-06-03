@@ -32,10 +32,8 @@ public class Main {
         }
 
         try {
-            nyanbot.getidPDF();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (GeneralSecurityException e) {
+            nyanbot.descargarPDF("a");
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
